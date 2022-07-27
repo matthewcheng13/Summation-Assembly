@@ -1,0 +1,50 @@
+.pos 0x0
+            irmovl $10, %ecx    # int n = 10
+            irmovl $0, %edx     # int i = 0
+            irmovl $0, %ebx     # offset for arr
+            
+mainloop:   rrmovl %ebx, %esi   # %esi = %ebx
+            irmovl arr, %eax    # %eax = base of arr
+            addl %eax, %esi     # %esi = base + offset
+            
+            irmovl $0, %esp     # int j = 0
+            irmovl $0, %ebp     # int sum = 0
+            
+midloop:    irmovl $0, %edi     # int temp = 0
+
+innerloop:  addl %esp, %ebp     # sum += j
+
+            irmovl $1, %eax     # get ready to increment temp
+            addl %eax, %edi     # temp++
+            
+            irmovl $7, %eax     # end innerloop val
+            subl %edi, %eax     # amount of loops left
+            jg innerloop        # while (temp < 7)
+            
+            irmovl $10, %eax    # get ready to subtract 10
+            subl %eax, %ebp     # sum -= 10
+            
+            irmovl $1, %eax     # get ready to increment j
+            addl %eax, %esp     # j++
+            
+            rrmovl %edx, %eax   # end midloop val
+            subl %esp, %eax     # amount of loops left
+            jge midloop         # while (j <= i)
+            
+            rmmovl %ebp, (%esi) # arr[i] = sum
+            
+            irmovl $4, %eax     # get ready to compute next address in arr
+            addl %eax, %ebx     # offset increased by 4 bytes
+            
+            irmovl $1, %eax     # get ready to increment i
+            addl %eax, %edx     # i++
+            
+            rrmovl %ecx, %eax   # end mainloop val
+            subl %edx, %eax     # amount of loops left
+            jge mainloop        # while (i <= n)
+            
+            halt
+
+
+.align 4
+arr:
